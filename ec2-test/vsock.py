@@ -36,14 +36,6 @@ class VsockStream:
         self.sock.close()
 
 
-def client_handler(args):
-    client = VsockStream()
-    endpoint = (args.cid, args.port)
-    client.connect(endpoint)
-    msg = 'todo_send_commnad'
-    client.send_data(msg.encode())
-
-
 class VsockListener:
     """Server"""
 
@@ -70,11 +62,19 @@ class VsockListener:
             from_client.close()
 
     def send_data(self, data):
-        """Send data to a renote endpoint"""
+        """Send data to a remote endpoint"""
         while True:
             (to_client, (remote_cid, remote_port)) = self.sock.accept()
             to_client.sendall(data)
             to_client.close()
+
+
+def client_handler(args):
+    client = VsockStream()
+    endpoint = (args.cid, args.port)
+    client.connect(endpoint)
+    msg = 'todo_send_commnad'
+    client.send_data(msg.encode())
 
 
 def server_handler(args):

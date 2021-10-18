@@ -5,12 +5,10 @@ import inspect
 import subprocess as sp
 import sys
 import vsock
-
 from os import path
 
 current_dir = path.dirname(path.abspath(inspect.getfile(inspect.currentframe())))
 
-# Binary executed
 NSM_CLI_BINARY = path.join(current_dir, 'nsm-cli')
 
 def client_handler(args):

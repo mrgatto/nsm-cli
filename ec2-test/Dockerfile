@@ -6,6 +6,5 @@ COPY nsm-cli .
 COPY nsm_cli_exec.py .
 COPY vsock.py .
 
-# 5010 is the socket port
 CMD ["/usr/local/bin/python3", "/root/nsm-cli/nsm_cli_exec.py", "server", "3000"]
 
