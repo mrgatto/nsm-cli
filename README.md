@@ -1,7 +1,8 @@
 # Nitro Security Module (NSM) Cli
 
 This is a command line tool for AWS Nitro Security Module.
-Nitro Enclaves only support Linux OSs on X86 or X64, so this package is not intended to be used on other OSs or architectures.
+
+Nitro Enclaves only support Linux OSs, so this package is not intended to be used on other OSs or architectures.
 
 All outputs are _JSON_ format.
 
