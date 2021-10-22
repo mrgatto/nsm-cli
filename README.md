@@ -27,8 +27,9 @@ FLAGS:
 
 SUBCOMMANDS:
     attestation     Create an AttestationDoc and sign it with it's private key to ensure authenticity
-    describe-nsm    Return capabilities and version of the connected NitroSecureModule
+    describe-nsm    Returns capabilities and version of the connected NitroSecureModule
     describe-pcr    Read data from PlatformConfigurationRegister at some index
+    get-random      Returns number of bytes of entropy
     help            Prints this message or the help of the given subcommand(s)
 ```
 
