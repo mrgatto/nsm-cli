@@ -15,6 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: musl-gcc Install
+      run: apt-get install musl-tools
+    
     - name: Target Install
       run: rustup target install x86_64-unknown-linux-musl
     
