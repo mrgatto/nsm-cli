@@ -16,6 +16,9 @@ jobs:
     
     - uses: actions/checkout@v2
     
+    - name: Install musl
+      run: sudo apt-get install musl-tools
+    
     - name: Install Rust
       uses: actions-rs/toolchain@v1
       with:
