@@ -8,9 +8,16 @@ All outputs are _JSON_ format.
 
 ## Build
 
+
 ```shell script
 rustup target install x86_64-unknown-linux-musl
 cargo build --release --target=x86_64-unknown-linux-musl
+```
+
+or (not required Rust and musl-gcc installed): 
+
+```shell script
+docker run -v $PWD:/volume --rm -t clux/muslrust cargo build --release
 ```
 
 ## Usage
