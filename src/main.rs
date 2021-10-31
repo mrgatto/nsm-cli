@@ -32,7 +32,7 @@ fn main() {
                 .about("Create an AttestationDoc and sign it with it's private key to ensure authenticity")
                 .arg(
                     Arg::with_name("userdata")
-                        .short("ud")
+                        .short("d")
                         .long("userdata")
                         .required(false)
                         .takes_value(true)
@@ -47,7 +47,7 @@ fn main() {
         ("get-random", Some(_)) => get_random(),
         ("attestation", Some(sub_m)) => attestation(sub_m),
         _ => {}
-    }
+    };
 }
 
 fn describe_pcr(sub_matches: &ArgMatches) {
