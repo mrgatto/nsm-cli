@@ -2,7 +2,7 @@
 
 This is a command line tool for AWS Nitro Security Module.
 
-Nitro Enclaves only support Linux OSs, so this package is not intended to be used on other OSs or architectures.
+Nitro Enclaves only support Linux, so this package is not intended to be used on other OSs or architectures outside enclaves.
 
 All outputs are _JSON_ format.
 
@@ -40,4 +40,6 @@ SUBCOMMANDS:
     help            Prints this message or the help of the given subcommand(s)
 ```
 
+## Outputs examples
 
+TODO
