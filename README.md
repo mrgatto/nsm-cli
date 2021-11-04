@@ -6,8 +6,8 @@ Nitro Enclaves only support Linux, so this package is not intended to be used on
 
 All outputs are _JSON_ format.
 
-## Build
 
+## Build
 
 ```shell script
 rustup target install x86_64-unknown-linux-musl

@@ -26,8 +26,8 @@ def server_handler(args):
 
     #proc = sp.Popen([NSM_CLI_BINARY, 'describe-pcr', '-i', '0'], stdout=sp.PIPE)
     #proc = sp.Popen([NSM_CLI_BINARY, 'describe-nsm'], stdout=sp.PIPE)
-    #proc = sp.Popen([NSM_CLI_BINARY, 'attestation', '-d', 'custommsg'], stdout=sp.PIPE)
-    proc = sp.Popen([NSM_CLI_BINARY, 'get-random'], stdout=sp.PIPE)
+    proc = sp.Popen([NSM_CLI_BINARY, 'attestation', '-d', 'custom_msg', '-r'], stdout=sp.PIPE)
+    #proc = sp.Popen([NSM_CLI_BINARY, 'get-random'], stdout=sp.PIPE)
     out, _ = proc.communicate()
     server.send_data(out)
 
