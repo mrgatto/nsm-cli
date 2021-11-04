@@ -3,9 +3,7 @@
 # Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-import argparse
 import socket
-import sys
 
 
 class VsockStream:
@@ -27,14 +25,12 @@ class VsockStream:
 
     def recv_data(self):
         """Receive data from a remote endpoint"""
-        rcvdata = ""
         while True:
             data = self.sock.recv(1024).decode()
             if not data:
                 break
-            rcvdata += data
+            print(data, end='', flush=True)
         self.sock.close()
-        return rcvdata
 
 
 class VsockListener:
@@ -53,14 +49,12 @@ class VsockListener:
         """Receive data from a remote endpoint"""
         while True:
             (from_client, (remote_cid, remote_port)) = self.sock.accept()
-            rcvdata = ""
             while True:
                 data = from_client.recv(1024).decode()
                 if not data:
                     break
-                rcvdata += data
+                print(data, end='', flush=True)
             from_client.close()
-            return rcvdata
 
     def send_data(self, data):
         """Send data to a remote endpoint"""
@@ -68,4 +62,3 @@ class VsockListener:
             (to_client, (remote_cid, remote_port)) = self.sock.accept()
             to_client.sendall(data)
             to_client.close()
-

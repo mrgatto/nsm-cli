@@ -5,6 +5,7 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.0"
+hex = "0.4.3"
 aws-nitro-enclaves-cose = "0.3.0"
 openssl = { version = "0.10.35", features = ["vendored"] }
 serde_bytes = "0.11"
