@@ -30,13 +30,19 @@ fn main() {
         ).subcommand(
             SubCommand::with_name("attestation")
                 .about("Create an AttestationDoc and sign it with it's private key to ensure authenticity")
-                .arg(
-                    Arg::with_name("userdata")
+                .args(
+                    &[Arg::with_name("userdata")
                         .short("d")
                         .long("userdata")
                         .required(false)
                         .takes_value(true)
                         .help("Additional user data"),
+                    Arg::with_name("raw")
+                        .short("r")
+                        .long("raw")
+                        .required(false)
+                        .takes_value(false)
+                        .help("Returns raw CBOR data")],
                 ),
         )
         .get_matches();
@@ -85,6 +91,52 @@ fn describe_nsm() {
     nsm_driver::nsm_exit(nsm_fd);
 }
 
+fn attestation(sub_matches: &ArgMatches) {
+    let user_data = sub_matches.value_of("userdata").unwrap_or("");
+    let raw_data = sub_matches.is_present("raw");
+
+    let nsm_fd = nsm_driver::nsm_init();
+
+    let request = Request::Attestation {
+        public_key: None, // TODO
+        user_data: Some(ByteBuf::from(user_data)),
+        nonce: None,
+    };
+
+    let response = match nsm_driver::nsm_process_request(nsm_fd, request) {
+        Response::Attestation { document } => Ok(document),
+        Response::Error(err) => Err(err),
+        _ => Err(ErrorCode::InvalidResponse),
+    };
+
+    if response.is_err() {
+        let json = serde_json::to_string(&response.unwrap_err());
+        println!("{:?}", json.unwrap());
+    } else {
+        let cbor = response.unwrap() as Vec<u8>;
+        let json: String;
+
+        if raw_data {
+            let json_value = serde_json::json!({ "cbor": cbor });
+            json = json_value.to_string();
+        } else {
+            let attestation_doc = attestation_decode(&cbor);
+            json = serde_json::to_string(&attestation_doc).unwrap();
+        }
+
+        println!("{:?}", json);
+    }
+
+    nsm_driver::nsm_exit(nsm_fd);
+}
+
+fn attestation_decode(cbor: &Vec<u8>) -> AttestationDoc {
+    let cose_doc = cose::CoseSign1::from_bytes(cbor).unwrap();
+    let payload = cose_doc.get_payload(None).unwrap();
+
+    AttestationDoc::from_binary(&payload).unwrap()
+}
+
 fn get_random() {
     let nsm_fd = nsm_driver::nsm_init();
 
@@ -101,43 +153,6 @@ fn get_random() {
     nsm_driver::nsm_exit(nsm_fd);
 }
 
-fn attestation(sub_matches: &ArgMatches) {
-    let user_data = sub_matches.value_of("userdata").unwrap_or("");
-
-    let nsm_fd = nsm_driver::nsm_init();
-
-    let request = Request::Attestation {
-        public_key: None,
-        user_data: Some(ByteBuf::from(user_data)),
-        nonce: None,
-    };
-
-    let response = match nsm_driver::nsm_process_request(nsm_fd, request) {
-        Response::Attestation { document } => Ok(document),
-        Response::Error(err) => Err(err),
-        _ => Err(ErrorCode::InvalidResponse),
-    };
-
-    if response.is_err() {
-        let json = serde_json::to_string(&response.unwrap_err());
-        println!("{:?}", json.unwrap());
-    } else {
-        let cbor = response.unwrap() as Vec<u8>;
-        let attestation_doc = attestation_decode(&cbor);
-        let json = serde_json::to_string(&attestation_doc);
-        println!("{:?}", json.unwrap());
-    }
-
-    nsm_driver::nsm_exit(nsm_fd);
-}
-
-fn attestation_decode(cbor: &Vec<u8>) -> AttestationDoc {
-    let cose_doc = cose::CoseSign1::from_bytes(cbor).unwrap();
-    let payload = cose_doc.get_payload(None).unwrap();
-
-    AttestationDoc::from_binary(&payload).unwrap()
-}
-
 fn is_error(json_value: &Value) -> bool {
     !json_value["Error"].is_null()
 }
@@ -149,21 +164,22 @@ mod tests {
 
     #[test]
     fn test_attestation_decode() {
-        let doc = &std::fs::read_to_string("data/attestation_doc_bytes").unwrap();
+        let doc = &std::fs::read_to_string("data/attestation_doc_raw.json").unwrap();
 
-        let cbor: Vec<u8> = doc
-            .split(',')
+        let json_value: Value = serde_json::from_str(doc).unwrap();
+        let cbor_field = json_value.get("cbor").unwrap();
+
+        let cbor: Vec<u8> = cbor_field
+            .as_array()
+            .unwrap()
             .into_iter()
-            .map(|x| x.trim())
-            .filter(|x| !x.is_empty())
-            .map(|x| x.parse::<u8>().unwrap())
+            .map(|x| x.as_u64().unwrap())
+            .map(|x| x as u8)
             .collect();
 
-        let attestation_doc = attestation_decode(&cbor.to_vec());
-        assert_eq!(
-            attestation_doc.module_id,
-            "i-09eb1f8c065b7f2e8-enc017c9014e72f9d78"
-        );
-        //println!("{:?}", attestation_doc);
+        let att_doc = attestation_decode(&cbor);
+
+        assert_eq!(att_doc.module_id, "i-09eb1f8c065b7f2e8-enc017ce82a299eb0a2");
+        //println!("{:?}", att_doc);
     }
 }
