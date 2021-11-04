@@ -162,9 +162,8 @@ mod tests {
 
     use super::*;
 
-    #[test]
-    fn test_attestation_decode() {
-        let doc = &std::fs::read_to_string("data/attestation_doc_raw.json").unwrap();
+    fn read_attestation() -> AttestationDoc {
+        let doc = &std::fs::read_to_string("tests/data/attestation_doc_raw.json").unwrap();
 
         let json_value: Value = serde_json::from_str(doc).unwrap();
         let cbor_field = json_value.get("cbor").unwrap();
@@ -177,9 +176,24 @@ mod tests {
             .map(|x| x as u8)
             .collect();
 
-        let att_doc = attestation_decode(&cbor);
+        attestation_decode(&cbor)
+    }
+
+    #[test]
+    fn test_attestation_decode() {
+        let att_doc = read_attestation();
 
         assert_eq!(att_doc.module_id, "i-09eb1f8c065b7f2e8-enc017ce82a299eb0a2");
+        let pcr0 = hex::encode(att_doc.pcrs[&0].to_vec());
+        assert_eq!(pcr0, "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
         //println!("{:?}", att_doc);
+    }
+
+    #[test]
+    fn test_attestation_json() {
+        let att_doc = read_attestation();
+        let json = serde_json::to_string(&att_doc);
+        assert!(json.is_ok());
+        //println!("{:?}", json.unwrap());
     }
 }

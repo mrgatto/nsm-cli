@@ -4,8 +4,8 @@
 # Build and run the Enclave
 #
 
-# Copy nsm-cli binary 
-cp ../target/x86_64-unknown-linux-musl/release/nsm-cli .
+# Copy nsm-cli binary
+cp ../../target/x86_64-unknown-linux-musl/release/nsm-cli .
 
 # Cleanup
 nitro-cli terminate-enclave --all
