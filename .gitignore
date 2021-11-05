@@ -1,3 +1,8 @@
-/target
+**/target
 __pycache__
+.vscode
+
 *.eif
+.settings
+.classpath
+.project

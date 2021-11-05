@@ -1,0 +1,14 @@
+[package]
+name = "verify_cbor"
+version = "1.0.0"
+edition = "2018"
+
+[dependencies]
+aws-nitro-enclaves-cose = "0.3.0"
+openssl = { version = "0.10.35", features = ["vendored"] }
+serde_cbor = "0.10"
+serde_json = "1.0"
+
+[dependencies.nsm-io]
+git = "https://github.com/aws/aws-nitro-enclaves-nsm-api.git"
+rev = "4f468c4"

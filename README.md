@@ -43,3 +43,7 @@ SUBCOMMANDS:
 ## Outputs examples
 
 TODO
+
+## Attestation document validation
+
+[examples](examples)

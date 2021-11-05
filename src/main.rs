@@ -163,7 +163,7 @@ mod tests {
     use super::*;
 
     fn read_attestation() -> AttestationDoc {
-        let doc = &std::fs::read_to_string("tests/data/attestation_doc_raw.json").unwrap();
+        let doc = &std::fs::read_to_string("test/data/attestation_doc_raw.json").unwrap();
 
         let json_value: Value = serde_json::from_str(doc).unwrap();
         let cbor_field = json_value.get("cbor").unwrap();
@@ -172,8 +172,7 @@ mod tests {
             .as_array()
             .unwrap()
             .into_iter()
-            .map(|x| x.as_u64().unwrap())
-            .map(|x| x as u8)
+            .map(|x| x.as_u64().unwrap() as u8)
             .collect();
 
         attestation_decode(&cbor)
