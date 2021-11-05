@@ -46,4 +46,4 @@ TODO
 
 ## Attestation document validation
 
-[examples](examples)
+[examples](examples/att-document-verification)
