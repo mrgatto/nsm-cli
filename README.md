@@ -46,4 +46,6 @@ TODO
 
 ## Attestation document validation
 
-[examples](examples/att-document-verification)
+Examples:
+   - [rust](examples/att-document-verification/rs)
+   - [java](examples/att-document-verification/java)
