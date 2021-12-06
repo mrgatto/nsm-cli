@@ -14,7 +14,7 @@ rustup target install x86_64-unknown-linux-musl
 cargo build --release --target=x86_64-unknown-linux-musl
 ```
 
-or (not required Rust and musl-gcc installed): 
+or with Docker (not required Rust and musl-gcc installed): 
 
 ```shell script
 docker run -v $PWD:/volume --rm -t clux/muslrust cargo build --release
@@ -36,13 +36,18 @@ SUBCOMMANDS:
     attestation     Create an AttestationDoc and sign it with it's private key to ensure authenticity
     describe-nsm    Returns capabilities and version of the connected NitroSecureModule
     describe-pcr    Read data from PlatformConfigurationRegister at some index
-    get-random      Returns number of bytes of entropy
+    get-random      Returns 256 bytes of pseudo-random numbers (entropy)
     help            Prints this message or the help of the given subcommand(s)
 ```
 
+
 ## Outputs examples
 
-TODO
+[describe-nsm](docs/describe-nsm.md)
+[describe-pcr](docs/describe-pcr.md)
+[attestation](docs/attestation.md)
+[get-random](docs/get-random.md)
+
 
 ## Attestation document validation
 

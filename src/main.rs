@@ -15,7 +15,7 @@ fn main() {
                 .about("Returns capabilities and version of the connected NitroSecureModule"),
         ).subcommand(
             SubCommand::with_name("get-random")
-                .about("Returns number of bytes of entropy"),
+                .about("Returns 256 bytes of pseudo-random numbers (entropy)"),
         ).subcommand(
             SubCommand::with_name("describe-pcr")
                 .about("Read data from PlatformConfigurationRegister at some index")
