@@ -43,10 +43,10 @@ SUBCOMMANDS:
 
 ## Outputs examples
 
-[describe-nsm](docs/describe-nsm.md)
-[describe-pcr](docs/describe-pcr.md)
-[attestation](docs/attestation.md)
-[get-random](docs/get-random.md)
+- [describe-nsm](docs/describe-nsm.md)
+- [describe-pcr](docs/describe-pcr.md)
+- [attestation](docs/attestation.md)
+- [get-random](docs/get-random.md)
 
 
 ## Attestation document validation
