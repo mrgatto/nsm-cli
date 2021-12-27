@@ -52,5 +52,5 @@ SUBCOMMANDS:
 ## Attestation document validation
 
 Examples:
-   - [rust](examples/att-document-verification/rs)
-   - [java](examples/att-document-verification/java)
+   - [Rust](examples/att-document-verification/rs)
+   - [Java](examples/att-document-verification/java)
