@@ -41,7 +41,7 @@ SUBCOMMANDS:
 ```
 
 
-## Outputs examples
+## Output examples
 
 - [describe-nsm](docs/describe-nsm.md)
 - [describe-pcr](docs/describe-pcr.md)
@@ -52,5 +52,6 @@ SUBCOMMANDS:
 ## Attestation document validation
 
 Examples:
-   - [Rust](examples/att-document-verification/rs)
    - [Java](examples/att-document-verification/java)
+   - [Rust](examples/att-document-verification/rs)
+   
