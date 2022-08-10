@@ -49,7 +49,7 @@ SUBCOMMANDS:
 - [get-random](docs/get-random.md)
 
 
-## Attestation document validation
+## Attestation Document validation
 
 Examples:
    - [Java](examples/att-document-verification/java)
