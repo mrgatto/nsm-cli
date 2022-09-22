@@ -1,6 +1,7 @@
 package com.github.mrgatto;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.PublicKey;
 import java.security.Security;
@@ -16,7 +17,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,6 +42,7 @@ import COSE.Sign1Message;
 public class Validation {
 
 	public static void main(String[] args) throws Exception {
+		
 		Security.addProvider(new BouncyCastleProvider());
 
 		JsonNode node = null;
@@ -51,14 +52,12 @@ public class Validation {
 			node = objectMapper.readTree(is);
 		}
 
-		ArrayList<Byte> bytes = new ArrayList<>();
-		node.get("cbor").iterator().forEachRemaining(vl -> {
-			bytes.add((byte) vl.asInt());
-		});
-
-		byte[] cborBytes = ArrayUtils.toPrimitive(bytes.toArray(new Byte[bytes.size()]));
-
-		validateAttestationDoc(cborBytes);
+		ByteArrayOutputStream cborBytes = new ByteArrayOutputStream();
+		for (JsonNode byteNode : node.get("cbor")) {
+			cborBytes.write(byteNode.asInt());
+		}
+		
+		validateAttestationDoc(cborBytes.toByteArray());
 	}
 
 	private static void validateAttestationDoc(byte[] bytes) throws Exception {
@@ -66,10 +65,10 @@ public class Validation {
 		Sign1Message sign1Message = (Sign1Message) message;
 
 		validateSign1Message(sign1Message);
-        System.out.println("Valid COSE signed message");
+		System.out.println("Valid COSE signed message");
 
 		validateRootCertificate(sign1Message);
-        System.out.println("Valid certificates");
+		System.out.println("Valid certificates");
 	}
 
 	private static void validateSign1Message(Sign1Message message) throws Exception {
@@ -82,7 +81,8 @@ public class Validation {
 	}
 
 	private static void validateRootCertificate(Sign1Message message) throws Exception {
-		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509",
+				BouncyCastleProvider.PROVIDER_NAME);
 
 		X509Certificate rootCert = null;
 		try (InputStream is = Validation.class.getClassLoader().getResourceAsStream("root.pem")) {
@@ -93,19 +93,20 @@ public class Validation {
 
 		// X509Certificate x509 = getCertificate(message);
 
-        CertPath certPath = certificateFactory.generateCertPath(caBundle);
+		CertPath certPath = certificateFactory.generateCertPath(caBundle);
 
 		TrustAnchor trustAnchor = new TrustAnchor(rootCert, null);
 		PKIXParameters params = new PKIXParameters(new HashSet<>(Arrays.asList(trustAnchor)));
-        params.setRevocationEnabled(false);
+		params.setRevocationEnabled(false);
 
-        CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX", BouncyCastleProvider.PROVIDER_NAME);
-        certPathValidator.validate(certPath, params);
+		CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX", BouncyCastleProvider.PROVIDER_NAME);
+		certPathValidator.validate(certPath, params);
 	}
 
 	/**
-	 * certificate: cert; the infrastucture certificate used to sign this document, DER encoded
-     */
+	 * certificate: cert; the infrastucture certificate used to sign this document,
+	 * DER encoded
+	 */
 	private static X509Certificate getCertificate(Message message) throws Exception {
 		CBORObject messageObject = CBORObject.DecodeFromBytes(message.GetContent());
 		byte[] certificate = messageObject.get("certificate").GetByteString();
@@ -125,7 +126,7 @@ public class Validation {
 
 		CertificateFactory cf = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
 
-		for (CBORObject ca: cabundle) {
+		for (CBORObject ca : cabundle) {
 			byte[] certificate = ca.GetByteString();
 			X509Certificate x509 = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificate));
 			certificates.add(x509);
