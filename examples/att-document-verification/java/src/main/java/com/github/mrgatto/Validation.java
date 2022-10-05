@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -98,6 +99,10 @@ public class Validation {
 		TrustAnchor trustAnchor = new TrustAnchor(rootCert, null);
 		PKIXParameters params = new PKIXParameters(new HashSet<>(Arrays.asList(trustAnchor)));
 		params.setRevocationEnabled(false);
+		
+		// Date expedition of the document
+		// Nitro Enclave seems to sign with a 3 hours certificate validity
+		params.setDate(DateUtils.parseDate("2021-11-03 22", "YYYY-MM-dd HH"));
 
 		CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX", BouncyCastleProvider.PROVIDER_NAME);
 		certPathValidator.validate(certPath, params);
